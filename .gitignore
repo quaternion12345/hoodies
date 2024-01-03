@@ -1,0 +1,16 @@
+### IntelliJ IDEA ###
+**/.idea
+**/*.iws
+**/*.iml
+**/*.ipr
+**/backend/Hoodies/src/main/resources/application.yml
+**/backend/Hoodies/build/
+!**/backend/Hoodies/src/main/**/build/
+!**/backend/Hoodies/src/test/**/build/
+**/backend/Hoodies/out/
+!**/backend/Hoodies/src/main/**/out/
+!**/backend/Hoodies/src/test/**/out/
+
+### VS Code ###
+**/.vscode/
+**/node_modules/
