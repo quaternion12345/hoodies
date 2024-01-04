@@ -19,8 +19,8 @@ public class Workaround implements WebMvcOpenApiTransformationFilter {
 
         Server awsServer = new Server();
         awsServer.setDescription("aws");
-//        awsServer.setUrl("https://k7a402.p.ssafy.io/api");
-        awsServer.setUrl("https://localhost:8080/api");
+        awsServer.setUrl("https://43.201.196.38:8880/api");
+//        awsServer.setUrl("https://localhost:8080/api");
         openApi.setServers(Arrays.asList(awsServer));
 
         return openApi;
