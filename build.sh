@@ -19,7 +19,7 @@ cd $REPOSITORY/$PROJECT_NAME/frontend/Hoodies/
 npm install --force
 npm run build
 npm install -g serve
-cp $REPOSITORY/$PROJECT_NAME/frontend/Hoodies/build/ $REPOSITORY/$PROJECT_NAME/run/
+cp -r $REPOSITORY/$PROJECT_NAME/frontend/Hoodies/build/ $REPOSITORY/$PROJECT_NAME/run/
 
 echo "> TextFilter Build"
 pip3 install -r $REPOSITORY/$PROJECT_NAME/textFilter/requirements.txt --no-cache-dir
