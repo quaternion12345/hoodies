@@ -67,7 +67,7 @@ export const deleteComment = async (proId, commentId) => {
 export const checkEvaluation = async (formData) => {
     try {
         // const response = await axios1.post('https://k7a402.p.ssafy.io/ai/comment', formData)
-        const response = await axios1.post('http://localhost:8081/comment', formData, {withCredentials: false})
+        const response = await axios1.post('http://localhost:8881/comment', formData, {withCredentials: false})
         return response.data
     } catch (err) {
         console.log(err)
