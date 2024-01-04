@@ -175,7 +175,7 @@ export const fetchSearch = async (option, keyword, page) => {
 export const previewImg = async (formData) => {
     try {
         // const response = await axios.post('https://k7a402.p.ssafy.io/cm/image/filter', formData, {headers: {
-        const response = await axios.post('http://localhost:8880/cm/image/filter', formData, {headers: {
+        const response = await axios.post('http://hoodies.fermion-project.kro.kr/cm/image/filter', formData, {headers: {
             'Content-Type': 'multipart/form-data'
         }})
         return response.data.result
