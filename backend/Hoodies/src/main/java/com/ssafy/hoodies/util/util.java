@@ -25,7 +25,7 @@ public class util {
 
     public static ResponseEntity<String> checkExpression(String title, String content, String type){
 //        String url = "https://k7a402.p.ssafy.io/ai/" + type;
-        String url = "http://localhost:8081/" + type;
+        String url = "http://localhost:8881/" + type;
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         if("article".equals(type)){
             params.add("title", title);
