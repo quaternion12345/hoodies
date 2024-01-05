@@ -16,7 +16,7 @@ cp $REPOSITORY/$PROJECT_NAME/backend/Hoodies/build/libs/*-SNAPSHOT.jar $REPOSITO
 
 echo "> FrontEnd Build"
 cd $REPOSITORY/$PROJECT_NAME/frontend/Hoodies/
-export NODE_OPTIONS=--max_old_space_size=5000
+export NODE_OPTIONS=--max_old_space_size=4096
 npm cache verify
 npm install --force
 npm run build
