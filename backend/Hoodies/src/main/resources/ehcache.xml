@@ -27,7 +27,7 @@
     </cache>
 
     <cache alias="typicalMentor" uses-template="defaultCache">
-        <key-type>int</key-type>
+        <key-type>java.lang.Integer</key-type>
         <value-type>java.util.List</value-type>
     </cache>
 
