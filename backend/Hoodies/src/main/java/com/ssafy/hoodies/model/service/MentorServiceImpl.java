@@ -3,6 +3,7 @@ package com.ssafy.hoodies.model.service;
 import com.ssafy.hoodies.model.dto.MentorDto;
 import com.ssafy.hoodies.model.repository.MentorRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MentorServiceImpl implements MentorService{
     private final MentorRepository mentorRepository;
+    @Cacheable(cacheNames = "mentor", key="#root.methodName")
     @Transactional(readOnly = true)
     public List<MentorDto> findMentors() {
         Sort sort = Sort.by("modifiedAt").descending()
@@ -26,6 +28,7 @@ public class MentorServiceImpl implements MentorService{
                                .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "typicalMentor", key="#type")
     @Transactional(readOnly = true)
     public List<MentorDto> findTypicalMentors(int type) {
         Sort sort = Sort.by("modifiedAt").descending()
@@ -44,6 +47,7 @@ public class MentorServiceImpl implements MentorService{
         return dto.get();
     }
 
+    @Cacheable(cacheNames = "mentor", key="#root.methodName")
     @Transactional(readOnly = true)
     public List<MentorDto> findRecentMentor() {
         return mentorRepository.findBy(PageRequest.of(0, 8, Sort.by("modifiedAt").descending()

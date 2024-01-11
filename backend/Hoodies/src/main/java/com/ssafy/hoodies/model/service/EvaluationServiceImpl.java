@@ -8,6 +8,7 @@ import com.ssafy.hoodies.model.repository.MentorRepository;
 import com.ssafy.hoodies.util.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -26,6 +27,8 @@ public class EvaluationServiceImpl implements EvaluationService{
     private String salt;
     private final MentorRepository mentorRepository;
     private final MongoTemplate mongoTemplate;
+
+    @CacheEvict(cacheNames = {"mentor", "typicalMentor"}, allEntries = true)
     @Transactional
     public int addEvaluation(EvaluationDto evaluationDto, String id) {
         Optional<Mentor> dto = mentorRepository.findById(id);
@@ -63,6 +66,7 @@ public class EvaluationServiceImpl implements EvaluationService{
                                          .intValue();
     }
 
+    @CacheEvict(cacheNames = {"mentor", "typicalMentor"}, allEntries = true)
     @Transactional
     public int removeEvaluation(String mid, String eid) {
         Optional<MentorDto> dto = mentorRepository.findById(mid).map(MentorDto::fromEntity);

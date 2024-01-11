@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -368,6 +369,7 @@ public class UserServiceImpl implements UserService {
         return mongoTemplate.find(query, Board.class);
     }
 
+    @Cacheable(cacheNames = "nickname", key="#email")
     public String findNickname(String email) {
         User user = userRepository.findById(email).orElse(null);
         if (user == null) return "";

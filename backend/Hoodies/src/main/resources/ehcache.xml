@@ -1,0 +1,38 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+
+    <!-- Cache element가 상속받을 수 있는 unique한 name을 가진 template를 설정 -->
+    <cache-template name="defaultCache">
+        <!-- Cache의 Expired Time을 설정 -->
+        <expiry>
+            <ttl unit="seconds">60</ttl>
+        </expiry>
+        <heap unit="entries">50</heap>
+    </cache-template>
+
+    <!-- Cache Template를 상속받아 override하여 사용 -->
+    <cache alias="nickname" uses-template="defaultCache">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.lang.String</value-type>
+        <expiry>
+            <tti unit="minutes">5</tti>
+        </expiry>
+        <heap unit="entries">100</heap>
+    </cache>
+
+    <cache alias="mentor" uses-template="defaultCache">
+        <value-type>java.util.List</value-type>
+    </cache>
+
+    <cache alias="typicalMentor" uses-template="defaultCache">
+        <key-type>int</key-type>
+        <value-type>java.util.List</value-type>
+    </cache>
+
+    <cache alias="board" uses-template="defaultCache">
+        <value-type>java.util.List</value-type>
+    </cache>
+
+</config>

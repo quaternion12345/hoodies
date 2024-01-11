@@ -7,6 +7,8 @@ import com.ssafy.hoodies.model.repository.BoardRepository;
 import com.ssafy.hoodies.util.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,6 +34,7 @@ public class BoardServiceImpl implements BoardService{
     private final MongoTemplate mongoTemplate;
 //    private final FileService fileService;
 
+    @CacheEvict(cacheNames = "board", allEntries = true)
     @Transactional
     public BoardDto addBoard(BoardDto dto){
         switch(BoardType.convert(dto.getType())){
@@ -63,6 +66,7 @@ public class BoardServiceImpl implements BoardService{
         return fromEntity(mongoTemplate.findAndModify(boardQuery, boardUpdate, findAndModifyOptions, Board.class));
     }
 
+    @CacheEvict(cacheNames = "board", allEntries = true)
     @Transactional
     public int modifyBoard(BoardDto boardDto){
         String id = boardDto.get_id();
@@ -93,6 +97,7 @@ public class BoardServiceImpl implements BoardService{
                                          .intValue();
     }
 
+    @CacheEvict(cacheNames = "board", allEntries = true)
     @Transactional
     public int removeBoard(String id, String nickname, boolean isAdmin){
         Optional<BoardDto> dto = boardRepository.findById(id).map(BoardDto::fromEntity);
@@ -120,6 +125,7 @@ public class BoardServiceImpl implements BoardService{
         return 1;
     }
 
+    @Cacheable(cacheNames = "board", key="#root.methodName")
     @Transactional(readOnly = true)
     public List<BoardDto> findRecentBoard(){
         Sort sort = Sort.by("createdAt").descending();
@@ -135,6 +141,7 @@ public class BoardServiceImpl implements BoardService{
         return list.subList(0, Math.min(list.size(), 10));
     }
 
+    @Cacheable(cacheNames = "board", key="#root.methodName")
     @Transactional(readOnly = true)
     public List<BoardDto> findPopularBoard(){
         Sort sort = Sort.by("like").descending().and(Sort.by("createdAt").descending());
@@ -150,6 +157,7 @@ public class BoardServiceImpl implements BoardService{
         return list.subList(0, Math.min(list.size(), 10));
     }
 
+    @CacheEvict(cacheNames = "board", allEntries = true)
     @Transactional
     public int reportBoard(String id, String nickname){
         Optional<BoardDto> dto = boardRepository.findById(id).map(BoardDto::fromEntity);
@@ -178,6 +186,7 @@ public class BoardServiceImpl implements BoardService{
                                          .intValue();
     }
 
+    @CacheEvict(cacheNames = "board", allEntries = true)
     @Transactional
     public int likeBoard(String id, String nickname){
         Optional<BoardDto> dto = boardRepository.findById(id).map(BoardDto::fromEntity);

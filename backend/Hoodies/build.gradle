@@ -40,6 +40,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation group: 'com.j256.simplemagic', name: 'simplemagic', version: '1.8'
+    implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.14'
+    implementation 'org.ehcache:ehcache:3.8.1'
+    implementation 'javax.cache:cache-api:1.1.1'
+
 }
 
 tasks.withType(JavaCompile) {
