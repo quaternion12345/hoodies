@@ -11,4 +11,5 @@ public interface BoardRepository extends MongoRepository<Board, String> {
     List<Board> findBy(Pageable pageable);
     Page<Board> findAllByType(int type, Pageable pageable);
     List<Board> findAllByType(int type);
+    List<Board> findAllByTypeAndWriter(int type, String writer);
 }

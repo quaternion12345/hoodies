@@ -4,6 +4,7 @@ package com.ssafy.hoodies.model.entity;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Builder
 @Data
+@CompoundIndex(def = "{'modifiedAt': -1, '_id': 1}")
 @Document(collection = "mentor")
 public class Mentor {
     @Id

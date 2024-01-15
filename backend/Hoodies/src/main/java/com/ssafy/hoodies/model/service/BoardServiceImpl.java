@@ -217,15 +217,15 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Transactional
-    public Page<BoardDto> searchBoard(int type, int option, String keyword, Pageable pageable){
+    public Page<BoardDto> searchBoard(int type, int option, String keyword, Pageable pageable) {
         Set<String> keywords = new HashSet<>(Arrays.asList(keyword.trim().split("\\s+"))); // 키워드 공백으로 분리
         Predicate<BoardDto> expression = o -> false;
-        switch(option){
+        switch (option) {
             case 1: // 제목만 조회
                 expression = boardDto -> keywords.stream().allMatch(boardDto.getTitle()::contains);
                 break;
             case 2: // 작성자만 조회
-                expression = boardDto -> boardDto.getWriter().equals(keyword);
+//                expression = boardDto -> boardDto.getWriter().equals(keyword);
                 break;
             case 3: // 내용만 조회
                 expression = boardDto -> keywords.stream().allMatch(boardDto.getContent()::contains);
@@ -233,13 +233,21 @@ public class BoardServiceImpl implements BoardService{
             default:
                 break;
         }
-        List<BoardDto> boardDtoList =  boardRepository.findAllByType(type)
-                                                      .stream()
-                                                      .map(BoardDto::fromEntity)
-                                                      .filter(expression)
-                                                      .sorted(Comparator.comparing(BoardDto::getCreatedAt).reversed())
-                                                      .collect(Collectors.toList());
-
+        List<BoardDto> boardDtoList = null;
+        if (option == 2) {
+            boardDtoList = boardRepository.findAllByTypeAndWriter(type, keyword)
+                                          .stream()
+                                          .map(BoardDto::fromEntity)
+                                          .sorted(Comparator.comparing(BoardDto::getCreatedAt).reversed())
+                                          .collect(Collectors.toList());
+        } else {
+            boardDtoList = boardRepository.findAllByType(type)
+                                          .stream()
+                                          .map(BoardDto::fromEntity)
+                                          .filter(expression)
+                                          .sorted(Comparator.comparing(BoardDto::getCreatedAt).reversed())
+                                          .collect(Collectors.toList());
+        }
         int page = pageable.getPageNumber()-1;
         int size = pageable.getPageSize();
         long start =  PageRequest.of(page, size).getOffset();
