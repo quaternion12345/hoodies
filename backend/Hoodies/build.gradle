@@ -43,7 +43,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.14'
     implementation 'org.ehcache:ehcache:3.8.1'
     implementation 'javax.cache:cache-api:1.1.1'
-
+//    implementation 'redis.clients:jedis:3.9.0'
+    implementation ('org.springframework.boot:spring-boot-starter-data-redis')//{
+//        exclude group: 'io.lettuce', module: 'lettuce-core'
+//    }
 }
 
 tasks.withType(JavaCompile) {

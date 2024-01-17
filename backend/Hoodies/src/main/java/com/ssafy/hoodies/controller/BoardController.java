@@ -70,7 +70,8 @@ public class BoardController {
                     value = "게시물의 DB상 id",
                     required = true)
             @PathVariable String id){
-        return boardService.findBoard(id);
+        String email = securityService.findEmail();
+        return boardService.findBoard(id, email);
     }
 
     // Update

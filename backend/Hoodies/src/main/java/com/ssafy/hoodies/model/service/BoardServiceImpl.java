@@ -15,8 +15,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+//import redis.clients.jedis.Jedis;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -33,6 +38,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final MongoTemplate mongoTemplate;
 //    private final FileService fileService;
+    private final StringRedisTemplate redisTemplate;
 
     @CacheEvict(cacheNames = "board", allEntries = true)
     @Transactional
@@ -59,11 +65,17 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Transactional
-    public BoardDto findBoard(String id){
-        FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options().returnNew(true);
+    public BoardDto findBoard(String id, String email){
+        SetOperations<String, String> redis = redisTemplate.opsForSet();
         Query boardQuery = new Query(Criteria.where("_id").is(id));
-        Update boardUpdate = new Update().inc("hit", 1);
-        return fromEntity(mongoTemplate.findAndModify(boardQuery, boardUpdate, findAndModifyOptions, Board.class));
+        if(redis.isMember("hit:"+id, email)){
+            return fromEntity(mongoTemplate.findOne(boardQuery, Board.class));
+        }else{
+            redis.add("hit:"+id, email);
+            FindAndModifyOptions findAndModifyOptions = FindAndModifyOptions.options().returnNew(true);
+            Update boardUpdate = new Update().inc("hit", 1);
+            return fromEntity(mongoTemplate.findAndModify(boardQuery, boardUpdate, findAndModifyOptions, Board.class));
+        }
     }
 
     @CacheEvict(cacheNames = "board", allEntries = true)
@@ -179,7 +191,6 @@ public class BoardServiceImpl implements BoardService{
         Update boardUpdate = new Update();
 
         boardUpdate.set("reporter", reporter);
-        boardUpdate.inc("hit", -1);
 
         return Long.valueOf(mongoTemplate.updateFirst(boardQuery, boardUpdate, Board.class)
                                          .getModifiedCount())
@@ -209,7 +220,6 @@ public class BoardServiceImpl implements BoardService{
 
         boardUpdate.set("contributor", contributor);
         boardUpdate.inc("like", diff);
-        boardUpdate.inc("hit", -1);
 
         return Long.valueOf(mongoTemplate.updateFirst(boardQuery, boardUpdate, Board.class)
                                          .getModifiedCount())
@@ -254,5 +264,14 @@ public class BoardServiceImpl implements BoardService{
         long end = (start + size) > boardDtoList.size() ? boardDtoList.size() : (start + size);
 
         return new PageImpl<>(boardDtoList.subList((int)start, (int)end), PageRequest.of(page, size), boardDtoList.size());
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void clearVisitors(){
+        Set<String> redisKey = redisTemplate.keys("hit*");
+        for(String key : redisKey){
+            redisTemplate.delete(key);
+        }
     }
 }

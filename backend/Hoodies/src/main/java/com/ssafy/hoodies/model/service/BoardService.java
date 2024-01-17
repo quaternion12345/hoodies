@@ -9,7 +9,7 @@ import java.util.List;
 public interface BoardService {
     public BoardDto addBoard(BoardDto dto);
     public Page<BoardDto> findBoards(int type, Pageable pageable);
-    public BoardDto findBoard(String id);
+    public BoardDto findBoard(String id, String email);
     public int modifyBoard(BoardDto dto);
     public int removeBoard(String id, String nickname, boolean isAdmin);
     public List<BoardDto> findRecentBoard();
