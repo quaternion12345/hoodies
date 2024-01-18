@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,35 +27,43 @@ public class MentorController {
     // 전체 평가 페이지 조회
     @GetMapping("mentor")
     @ApiOperation(value = "전체 평가페이지 조회")
-    public List<MentorDto> mentorList(){
-        return mentorService.findMentors();
+    public Callable<List<MentorDto>> mentorList(){
+        return () -> {
+            return mentorService.findMentors();
+        };
     }
 
     // 타입별 평가 페이지 조회
     @GetMapping("mentor/{type}")
     @ApiOperation(value = "타입별 전체 평가 페이지 조회")
-    public List<MentorDto> mentorTypeList(@PathVariable int type){
-        return mentorService.findTypicalMentors(type);
+    public Callable<List<MentorDto>> mentorTypeList(@PathVariable int type){
+        return () -> {
+            return mentorService.findTypicalMentors(type);
+        };
     }
 
     // 특정 평가페이지 조회
     @GetMapping("mentor/detail/{id}")
     @ApiOperation(value = "특정 평가 페이지 조회")
-    public MentorDto mentorDetail(
+    public Callable<MentorDto> mentorDetail(
             @ApiParam(
                     name =  "id",
                     type = "String",
                     value = "평가의 DB상 id",
                     required = true)
             @PathVariable String id){
-        return mentorService.findMentor(id);
+        return () -> {
+            return mentorService.findMentor(id);
+        };
     }
 
     // 최근 게시물 조회
     @GetMapping("preview/mentor")
     @ApiOperation(value = "최근 평가 8개 조회")
-    public List<MentorDto> mentorRecent(){
-        return mentorService.findRecentMentor();
+    public Callable<List<MentorDto>> mentorRecent(){
+        return () -> {
+            return mentorService.findRecentMentor();
+        };
     }
 
     // 평가 등록

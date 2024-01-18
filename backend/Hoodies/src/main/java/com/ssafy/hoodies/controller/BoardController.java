@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @RestController
@@ -50,14 +51,16 @@ public class BoardController {
     // 게시물 조회 --> https://~/api/board?page=0&size=5&sort=id.desc
     @GetMapping("/board/{type}")
     @ApiOperation(value = "유형별 전체 게시물 조회")
-    public Page<BoardDto> boardList(Pageable pageable,
-                                    @ApiParam(
+    public Callable<Page<BoardDto>> boardList(Pageable pageable,
+                                              @ApiParam(
                                             name = "type",
                                             type = "int",
                                             value = "게시물의 유형",
                                             required = true)
                                     @PathVariable int type){
-        return boardService.findBoards(type, pageable);
+        return () -> {
+            return boardService.findBoards(type, pageable);
+        };
     }
 
     // 특정 게시물 조회
@@ -165,21 +168,27 @@ public class BoardController {
     // 최근 게시물 조회
     @GetMapping("/preview/free")
     @ApiOperation(value = "최근 게시물 10개 조회")
-    public List<BoardDto> boardRecent() {
-        return boardService.findRecentBoard();
+    public Callable<List<BoardDto>> boardRecent() {
+        return () -> {
+            return boardService.findRecentBoard();
+        };
     }
 
     // 인기 게시물 조회
     @GetMapping("/preview/popular")
     @ApiOperation(value = "인기 게시물 10개 조회")
-    public List<BoardDto> boardPopular() {
-        return boardService.findPopularBoard();
+    public Callable<List<BoardDto>> boardPopular() {
+        return () -> {
+            return boardService.findPopularBoard();
+        };
     }
 
     @GetMapping("/board/{type}/search")
     @ApiOperation(value = "게시판 내 검색")
-    public Page<BoardDto> boardSearch(@PathVariable int type, @RequestParam int option, @RequestParam String keyword, Pageable pageable){
-        return boardService.searchBoard(type, option, keyword, pageable);
+    public Callable<Page<BoardDto>> boardSearch(@PathVariable int type, @RequestParam int option, @RequestParam String keyword, Pageable pageable){
+        return () -> {
+            return boardService.searchBoard(type, option, keyword, pageable);
+        };
     }
 
     @PostMapping("/board/feedback")
